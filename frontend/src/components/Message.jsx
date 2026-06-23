@@ -1,5 +1,5 @@
 
-const Message = ({ text, sender }) => {
+const Message = ({ text, sender, timestamp }) => {
   const isMe = sender === "me";
 
   return (
@@ -10,6 +10,10 @@ const Message = ({ text, sender }) => {
         isMe ? 'bg-blue-500 text-white' : 'bg-gray-200'
       }` }>
         {text}
+
+        <p className="text-xs mt-1 opacity-70">
+          {timestamp}
+        </p>
       </div>
     </div>
   )
