@@ -20,10 +20,10 @@ const Sidebar = ({ users, selectedUser, setSelectedUser, }) => {
 
       <div className="space-y-3">
         {filteredUsers.map((user) => (
-          <div key={user.id} onClick={() => setSelectedUser(user)} className={`p-3 flex items-center gap-4 rounded-lg cursor-pointer ${
-            selectedUser.id === user.id ? "bg-blue-500" : "bg-gray-100"
+          <div key={user._id} onClick={() => setSelectedUser(user)} className={`p-3 flex items-center gap-4 rounded-lg cursor-pointer ${
+            selectedUser._id === user._id ? "bg-blue-500" : "bg-gray-100"
           }`}>
-            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full"/>
+            <img src={user.avatar || "https://i.pravatar.cc/150"} alt={user.name} className="w-10 h-10 rounded-full"/>
 
             <div>
               <p className="font-medium">

@@ -1,7 +1,24 @@
 import { Link } from "react-router-dom";
-
+import { register } from "../services/authService";
 
 const Signup = () => {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const data = await register({
+        name,
+        email,
+        password,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">

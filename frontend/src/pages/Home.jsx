@@ -1,23 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import ChatContainer from "../components/ChatContainer";
-import usersData from "../data/users";
-import chatsData from "../data/chats";
-
+import { getUsers } from "../services/userService";
+import { getMessages } from '../services/messageService';
 
 const Home = () => {
-  const users = [{id: 1,name: "Rahul",avatar: "https://i.pravatar.cc/150?img=1",
-    online: true,},{id: 2,name: "Priya",avatar: "https://i.pravatar.cc/150?img=5",
-    online: true,},{id: 3,name: "kiran",avatar: "https://i.pravatar.cc/150?img=60",
-    online: true,},];
+
+  const [users, setUsers] = useState([]);
 
   const [selectedUser, setSelectedUser] = useState(users[0]);
 
+  const [messages, setMessages] = useState([]);
+
+  
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const data = await getUsers();
+
+        setUsers(data);
+
+        if(data.length > 0){
+          setSelectedUser(data[0]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!selectedUser) return;
+
+      try {
+        const data = await getMessages(
+          selectedUser._id 
+        );
+
+        setMessages(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMessages();
+  }, [selectedUser]);
+
+  if (!selectedUser){
+    return (
+      <div className="h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    )
+  }
+
   
 
-  const [chats, setChats] = useState(chatsData);
-  
-  
   return (
     <div className="h-screen flex">
       <Sidebar
@@ -26,8 +67,8 @@ const Home = () => {
         setSelectedUser={setSelectedUser}/>
       <ChatContainer
         selectedUser={selectedUser}
-        chats={chats}
-        setChats={setChats}/>
+        messages={messages}
+        setMessages={setMessages}/>
     </div>
   );
 };

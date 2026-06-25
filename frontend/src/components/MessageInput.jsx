@@ -1,29 +1,29 @@
 import { useState } from "react"
+import { sendMessage } from "../services/messageService";
 
-const MessageInput = ({selectedUser, chats, setChats,}) => {
+
+const MessageInput = ({selectedUser, messages, setMessages, }) => {
 
   const [text, setText] = useState("");
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!text.trim()) return;
 
-    const newMessages = {
-      id: Date.now(),
-      text,
-      sender: "me",
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
+    try {
+      const newMessage = await sendMessage(
+        selectedUser._id,
+        text 
+      );
 
-    setChats({
-      ...chats,
-      [selectedUser.id] : [
-        ...(chats[selectedUser.id] || []),
-        newMessages,
-      ]
-    });
+      setMessages((prev) => [
+        ...prev,
+        newMessage,
+      ]);
+
+      setText("");
+    } catch (error) {
+      console.log(error);
+    }
 
     setText("");
   };

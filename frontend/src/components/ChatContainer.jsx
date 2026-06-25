@@ -2,8 +2,8 @@ import Message from "./Message";
 import MessageInput from "./MessageInput";
 import { useEffect, useRef } from "react";
 
-const ChatContainer = ({ selectedUser, chats, setChats, }) => {
-  const messages = chats[selectedUser.id] || [];
+const ChatContainer = ({ selectedUser, messages, setMessages, }) => {
+  // const messages = chats?.[selectedUser?._id] || [];
   
   const bottomRef = useRef(null);
   
@@ -12,20 +12,28 @@ const ChatContainer = ({ selectedUser, chats, setChats, }) => {
       behavior: "smooth",
     });
   }, [messages]);
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("user") || "null"
+  );
+
+  console.log("currentUser: " , currentUser);
+
+  console.log("message: ", messages);
   
   return (
     <div className="flex-1 flex flex-col">
       <div className="flex gap-4 items-center border-b p-4 font-semibold text-lg">
-        <img src={selectedUser.avatar} alt={selectedUser.name} className="w-10 h-10 rounded-full"/>
+        <img src={selectedUser.avatar || "https://i.pravatar.cc/150"} alt={selectedUser.name} className="w-10 h-10 rounded-full"/>
 
         <div>
           <h2 className="font-semibold">
             {selectedUser.name}
           </h2>
 
-          <p className="text-sm text-gray-500">
+          {/* <p className="text-sm text-gray-500">
             {selectedUser.online ? "Online" : "Offline"}
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -35,12 +43,18 @@ const ChatContainer = ({ selectedUser, chats, setChats, }) => {
             Start a conversation
           </div>
         ) : (
-          messages.map((messages) => (
+          messages.map((message) => (
             <Message
-            key={messages.id}
-            text={messages.text}
-            sender={messages.sender}
-            timestamp={messages.timestamp}
+            key={message._id}
+            text={message.text}
+            sender={currentUser && message.senderId.toString() === currentUser.id ? "me" : "other"}
+            timestamp={new Date(
+              message.createdAt
+            ).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          }
             />
           ))
         )}
@@ -48,7 +62,7 @@ const ChatContainer = ({ selectedUser, chats, setChats, }) => {
       </div>
 
 
-      <MessageInput selectedUser={selectedUser} chats={chats} setChats={setChats} />
+      <MessageInput selectedUser={selectedUser} messages={messages} setMessages={setMessages} />
     </div>
   )
 }
